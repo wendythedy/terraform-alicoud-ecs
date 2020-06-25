@@ -13,7 +13,7 @@ output "username" {
 
 output "public_ip" {
   description = "Instance public IP address"
-  value       = "${alicloud_instance.speed-test-ecs.public_ip}"
+  value       = "${alicloud_instance.demo-ecs.public_ip}"
 }
 
 output "ssh_key_file" {

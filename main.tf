@@ -1,10 +1,9 @@
 # 
-# Create a new VPC group, vSwitch, and Security Group for
-# network speed and stress testing
+# Create a new VPC group, vSwitch, and Security Group
 #
-# Author: Jeremy Pedersen
-# Creation Date: 2019-06-12
-# Last Update: 2019-10-22
+# Author: Wendy Thedy
+# Creation Date: 24-06-2020
+# Last Update: 24-06-2020
 
 # Get a list of availability zones
 data "alicloud_zones" "abc_zones" {}
@@ -24,24 +23,24 @@ provider "alicloud" {
 }
 
 # Create a new VPC group
-resource "alicloud_vpc" "speed-test-vpc" {
-  name       = "tf-speed-test-vpc"
+resource "alicloud_vpc" "demo-vpc" {
+  name       = "tf-demo-vpc"
   cidr_block = "${var.vpc_cidr_block}"
 }
 
 # Create a new vswitch
-resource "alicloud_vswitch" "speed-test-vswitch" {
-  name              = "tf-speed-test-vswitch"
-  vpc_id            = "${alicloud_vpc.speed-test-vpc.id}"
+resource "alicloud_vswitch" "demo-vswitch" {
+  name              = "tf-demo-vswitch"
+  vpc_id            = "${alicloud_vpc.demo-vpc.id}"
   cidr_block        = "${var.vswitch_cidr_block}"
   availability_zone = "${data.alicloud_zones.abc_zones.zones.0.id}"
 }
 
 # Set up Security Group and associated rules
-resource "alicloud_security_group" "speed-test-sg" {
-  name        = "tf-speed-test-sg"
+resource "alicloud_security_group" "demo-sg" {
+  name        = "tf-demo-sg"
   description = "Security group for development subnet"
-  vpc_id      = "${alicloud_vpc.speed-test-vpc.id}"
+  vpc_id      = "${alicloud_vpc.demo-vpc.id}"
 }
 
 resource "alicloud_security_group_rule" "inbound-ping" {
@@ -49,7 +48,7 @@ resource "alicloud_security_group_rule" "inbound-ping" {
   ip_protocol       = "all"
   policy            = "accept"
   port_range        = "-1/-1"
-  security_group_id = "${alicloud_security_group.speed-test-sg.id}"
+  security_group_id = "${alicloud_security_group.demo-sg.id}"
   cidr_ip           = "0.0.0.0/0"
 }
 
@@ -58,7 +57,7 @@ resource "alicloud_security_group_rule" "inbound-iperf" {
   ip_protocol       = "tcp"
   policy            = "accept"
   port_range        = "5001/5001"
-  security_group_id = "${alicloud_security_group.speed-test-sg.id}"
+  security_group_id = "${alicloud_security_group.demo-sg.id}"
   cidr_ip           = "0.0.0.0/0"
 }
 
@@ -67,33 +66,33 @@ resource "alicloud_security_group_rule" "inbound-ssh" {
   ip_protocol       = "tcp"
   policy            = "accept"
   port_range        = "22/22"
-  security_group_id = "${alicloud_security_group.speed-test-sg.id}"
+  security_group_id = "${alicloud_security_group.demo-sg.id}"
   cidr_ip           = "0.0.0.0/0"
 }
 
 # SSH key pair for instance login
-resource "alicloud_key_pair" "speed-test-key" {
+resource "alicloud_key_pair" "demo-key" {
   key_name = "${var.ssh_key_name}"
   key_file = "${var.ssh_key_name}.pem"
 }
 
 # Create a new ECS instance
-resource "alicloud_instance" "speed-test-ecs" {
-  instance_name = "tf-speed-test-ecs"
-  host_name     = "speed-test"
+resource "alicloud_instance" "demo-ecs" {
+  instance_name = "tf-demo-ecs"
+  host_name     = "demo"
 
   image_id = "${var.os_type}"
 
   instance_type        = "${data.alicloud_instance_types.mem4g.instance_types.0.id}"
   system_disk_category = "cloud_efficiency"
-  security_groups      = ["${alicloud_security_group.speed-test-sg.id}"]
-  vswitch_id           = "${alicloud_vswitch.speed-test-vswitch.id}"
+  security_groups      = ["${alicloud_security_group.demo-sg.id}"]
+  vswitch_id           = "${alicloud_vswitch.demo-vswitch.id}"
 
-  # Script to install stress testing tools
+  # Script to install tools
   user_data = "${file("install.sh")}"
 
   # SSH key for instance login
-  key_name = "${alicloud_key_pair.speed-test-key.key_name}"
+  key_name = "${alicloud_key_pair.demo-key.key_name}"
 
   # Make sure a public IP is assigned, with maximum bandwidth
   internet_max_bandwidth_out = 100

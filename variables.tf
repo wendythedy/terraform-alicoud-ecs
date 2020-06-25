@@ -19,7 +19,7 @@ variable "access_key_secret" {
 
 variable "ssh_key_name" {
   description = "An SSH key (must exist already in the region you plan to use)"
-  default = "speed-test"
+  default = "demo"
 }
 
 variable "region" {
