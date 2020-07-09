@@ -19,12 +19,12 @@ variable "access_key_secret" {
 
 variable "ssh_key_name" {
   description = "An SSH key (must exist already in the region you plan to use)"
-  default = "demo"
+  default = "tf-demo"
 }
 
 variable "region" {
-  description = "The Alibaba Cloud region where you want to launch your instance (ap-southeast-1 = Singapore)"
-  default     = "ap-southeast-1"
+  description = "The Alibaba Cloud region where you want to launch your instance (ap-southeast-5 = Indonesia)"
+  default     = "ap-southeast-5"
 }
 
 variable "vpc_cidr_block" {
@@ -32,9 +32,24 @@ variable "vpc_cidr_block" {
     default = "192.168.0.0/16"
 }
 
-variable "vswitch_cidr_block" {
-    description = "CIDR block for development subnet inside our VPC"
+variable "vswitch_cidr_block_public_A" {
+    description = "CIDR block for development public subnet A inside our VPC"
     default = "192.168.0.0/24"
+}
+
+variable "vswitch_cidr_block_public_B" {
+    description = "CIDR block for development public subnet B inside our VPC"
+    default = "192.168.1.0/24"
+}
+
+variable "vswitch_cidr_block_private_A" {
+    description = "CIDR block for development Private subnet A inside our VPC"
+    default = "192.168.2.0/24"
+}
+
+variable "vswitch_cidr_block_private_B" {
+    description = "CIDR block for development Private subnet B inside our VPC"
+    default = "192.168.3.0/24"
 }
 
 variable "os_type" {
