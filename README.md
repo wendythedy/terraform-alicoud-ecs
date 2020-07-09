@@ -6,5 +6,5 @@ first rename and fill secret env (RAM) file terraform.tfvars.example to terrafor
 
 use ./setup.sh to sun terraform apply
 
-use./detroy.sh to run terraform destroy
+use ./detroy.sh to run terraform destroy
 
