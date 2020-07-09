@@ -5,5 +5,6 @@ This code contains a terraform script to build a simple infrastructure that has 
 first rename and fill secret env (RAM) file terraform.tfvars.example to terraform.tfvars
 
 use ./setup.sh to sun terraform apply
-use ./detroy.sh to run terraform destroy
+
+use./detroy.sh to run terraform destroy
 
